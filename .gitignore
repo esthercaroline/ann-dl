@@ -1,5 +1,7 @@
 site/
 env/
+.jupyter/
+.ipynb_checkpoints/
 .cache/
 .vscode/
 target/
