@@ -1,6 +1,6 @@
 ---
 exercise: data
-ai_use: "Cursor (Claude) helped write the NumPy/Matplotlib data-generation and plotting code and draft the prose; the analysis, interpretation, and conclusions are my own."
+ai_use: "Cursor (Claude) helped write the NumPy/Matplotlib data-generation and plotting code. The analysis, interpretation, and conclusions are my own."
 ---
 
 # Data — Preparation and Analysis for Neural Networks
@@ -148,39 +148,232 @@ and prints all the reported numbers, and runs top-to-bottom from a clean checkou
 
 ## Exercise 2
 
+### Non-Linearity in Higher Dimensions
+
+My approach: build two 5-D, two-class datasets and contrast them. **Dataset I**
+separates the classes by *location* (a mean shift), so it is essentially linearly
+separable; **Dataset II** separates them by *radius* (concentric shells), so no
+hyperplane can separate it even though a single quadratic feature can. All numbers
+come from the notebook linked at the end.
+
 ### A — Dataset I: shifted Gaussians
 
-_TODO_
+I drew 500 samples per class from multivariate normals: Class A at
+\(\mu_A = [0,0,0,0,0]\) and Class B at \(\mu_B = [1.5,1.5,1.5,1.5,1.5]\), with the
+given covariances. Class B has larger variances and a **negative** correlation
+between the first two features, whereas Class A's is positive. This yields a
+\((1000, 5)\) matrix.
 
 ### B — Dataset II: concentric shells
 
-_TODO_
+I drew directions uniformly on the unit sphere of \(\mathbb{R}^5\)
+(\(v \sim \mathcal{N}(0, I_5)\), then \(u = v/\lVert v \rVert\)) and scaled each by
+a random radius: Class C (core) with \(\rho \sim \mathcal{N}(2.0, 0.4)\) and
+Class D (shell) with \(\rho \sim \mathcal{N}(5.0, 0.4)\), so \(x = \rho \, u\). I
+read the second parameter as a **standard deviation** of \(0.4\). This also yields
+a \((1000, 5)\) matrix, but with radial rather than location structure.
 
 ### C — Visualize and compare
 
-_TODO_
+![Figure 4 — PCA projection of both datasets to 2D](figures/fig4_pca.png)
+/// caption
+Figure 4 — PCA to 2D. Dataset I (left) splits cleanly along PC1; Dataset II
+(right) shows the core (green) buried inside the shell (purple) — a linear
+projection cannot pull them apart.
+///
+
+**Explained variance of the first two components:**
+
+| Dataset | PC1 | PC2 | PC1 + PC2 |
+| --- | --- | --- | --- |
+| I — shifted Gaussians | 0.513 | 0.158 | **0.670** |
+| II — concentric shells | 0.216 | 0.213 | **0.429** |
+
+The 2D projection preserves the classification-relevant information far better for
+**Dataset I**: its largest direction of variance (PC1) coincides with the
+mean-shift direction, so the classes split left/right in Figure 4. Dataset II is
+roughly isotropic, so its variance is spread almost evenly across all five axes
+(hence only 0.429 in two of them), and — crucially — the discriminative signal is
+radial, which no linear axis captures, so the classes stay superimposed.
+
+**Distance between class centers (in 5D)** and the radius histograms:
+
+| Dataset | \(\lVert \mu_1 - \mu_2 \rVert\) |
+| --- | --- |
+| I — shifted Gaussians | **3.264** |
+| II — concentric shells | **0.266** |
+
+![Figure 5 — radius histograms, both classes overlaid, per dataset](figures/fig5_radius.png)
+/// caption
+Figure 5 — Radius \(\lVert x \rVert\) per class. Dataset I overlaps; Dataset II is
+perfectly separated in radius (\(\approx 2\) vs. \(\approx 5\)) despite its class
+centers nearly coinciding.
+///
 
 ### D — Analysis
 
-_TODO_
+**1. Coincident centers + separated radii.** In Dataset II the class centers are
+essentially the same point (distance \(0.266\), versus \(3.264\) for Dataset I),
+yet the radius histograms are completely disjoint. A hyperplane separates by
+*location* — which side of a flat boundary a point falls on — but here both
+classes share the same center and are spherically symmetric, so **no hyperplane
+can separate them**. The signal lives in the distance from the origin, a quantity
+a linear boundary cannot see.
+
+**2. Why no linear boundary works, ever.** For any hyperplane \(w \cdot x = b\),
+project the data onto \(w\): since \(x = \rho\,u\) with \(u\) uniform on the
+sphere, \(w \cdot x = \rho\,(w \cdot u)\), and \(w \cdot u\) is symmetric about
+\(0\) with the *same shape* for both classes — only rescaled by \(\rho\). So both
+classes project to zero-mean, overlapping distributions (the shell just has
+heavier tails), and any threshold \(b\) misclassifies a large fraction. More data
+cannot fix this: it is a structural property — the core is **enclosed** by the
+shell, and a linear model can only ever carve out a single half-space, never an
+"inside vs. outside."
+
+**3. Does a mixed PCA view prove inseparability? No.** PCA is a *linear*
+transformation, so a projection in which the classes look mixed (Figure 4, right;
+only \(0.429\) variance retained) proves only that **no linear view** separates
+them — not that no function does. My own results confirm this: the same Dataset II
+is separated **perfectly** by a single quadratic feature,
+\(f(x) = \lVert x \rVert^2 = \sum_i x_i^2\). Thresholding at radius \(3.5\)
+(i.e. \(f(x) = 12.25\)) — "predict shell when \(\sum_i x_i^2 > 12.25\)" — gives
+**accuracy \(1.0000\)** on the 1000 points.
+
+### Code
+
+The full, runnable code is the Jupyter notebook
+[`code/ex2_nonlinearity.ipynb`](code/ex2_nonlinearity.ipynb) (rendered as
+**Data — Ex. 2 (notebook)** in the navigation). It generates both datasets,
+produces Figures 4 and 5, and prints every reported number.
 
 ## Exercise 3
 
+### Preparing Real-World Data for a Neural Network
+
+My approach: preprocess the Kaggle **Spaceship Titanic** dataset for a network with
+`tanh` hidden layers, which means every input must end up on a bounded,
+`tanh`-compatible scale. Crucially, every transformation statistic is fit on the
+training split only, so no test information leaks into the pipeline. (The data is
+`train.csv`; the notebook loads a local copy and falls back to a public mirror.)
+
 ### A — Get to know the data
 
-_TODO_
+**Goal.** Each row is a passenger; the target `Transported` is a boolean — whether
+the passenger was transported to another dimension during the spacetime anomaly. It
+is the binary label a classifier predicts. The classes are almost perfectly
+balanced: **True = 0.5036**, False = 0.4964.
+
+**Features** (raw shape \((8693, 14)\)):
+
+- **Numerical:** `Age`, `RoomService`, `FoodCourt`, `ShoppingMall`, `Spa`, `VRDeck`
+- **Categorical:** `HomePlanet`, `CryoSleep`, `Cabin`, `Destination`, `VIP`, `Name`
+- **Identifier (dropped):** `PassengerId`
+
+**Missing values** (every column is missing ~2%):
+
+| Column | Missing count | Missing % |
+| --- | --- | --- |
+| CryoSleep | 217 | 2.50 |
+| ShoppingMall | 208 | 2.39 |
+| VIP | 203 | 2.34 |
+| HomePlanet | 201 | 2.31 |
+| Name | 200 | 2.30 |
+| Cabin | 199 | 2.29 |
+| VRDeck | 188 | 2.16 |
+| FoodCourt | 183 | 2.11 |
+| Spa | 183 | 2.11 |
+| Destination | 182 | 2.09 |
+| RoomService | 181 | 2.08 |
+| Age | 179 | 2.06 |
+
+**Spending columns** — mean, median, maximum (full dataset):
+
+| Column | Mean | Median | Max |
+| --- | --- | --- | --- |
+| RoomService | 224.69 | 0.0 | 14327.0 |
+| FoodCourt | 458.08 | 0.0 | 29813.0 |
+| ShoppingMall | 173.73 | 0.0 | 23492.0 |
+| Spa | 311.14 | 0.0 | 22408.0 |
+| VRDeck | 304.85 | 0.0 | 24133.0 |
+
+For every spending column the **mean sits far above a median of 0**: most passengers
+spend nothing while a few spend enormous amounts. That gap is the signature of a
+strongly right-skewed, heavy-tailed distribution — which is exactly what the
+\(\log(1+x)\) transform in item C is meant to tame.
 
 ### B — Split before you transform
 
-_TODO_
+I split 80/20, stratified by `Transported`, with `random_state=42` — giving a
+training set of \((6954, 13)\) and a test set of \((1739, 13)\). **Why split first?**
+Every statistic used to transform the data — the imputation medians, the
+most-frequent categories, and the min/max used for scaling — must be learned from
+the training set alone. Computing them on the full dataset and splitting afterwards
+would let information from the test rows bleed into the pipeline (data leakage), and
+the reported performance would be optimistically biased and untrustworthy.
 
 ### C — Preprocess
 
-_TODO_
+**1. Missing data.** Numerical columns (`Age` + the five spending columns) are
+imputed with the **median** — robust to the heavy right tails, so a handful of big
+spenders cannot drag the fill value upward. Categorical columns (`HomePlanet`,
+`CryoSleep`, `Destination`, `VIP`) are imputed with the **most frequent** category.
+Both imputers are fit on the training set and only applied to the test set; after
+imputation there are **0 remaining NaN** in the columns used.
+
+**2. Categorical encoding.** I one-hot encode the four categoricals with
+`OneHotEncoder(handle_unknown="ignore")`, fit on the training categories. A category
+that appears **only in the test set** is encoded as all-zeros across that feature's
+columns rather than raising an error, so the pipeline never breaks on an unseen
+value. This yields 10 columns: `HomePlanet` (3), `CryoSleep` (2), `Destination` (3),
+`VIP` (2).
+
+**3. Feature engineering.** I create `TotalSpend`, the sum of the five spending
+columns, and drop `Cabin`, `Name`, and `PassengerId` (free-text / identifiers with
+no direct numerical meaning).
+
+**4. Heavy tails.** I apply \(\log(1+x)\) to the five spending columns and
+`TotalSpend`. This compresses the long tail into a roughly symmetric range. It helps
+a `tanh` network because the raw values (up to ~30 000) would instantly saturate
+`tanh` at \(\pm 1\), where its gradient is ~0 and learning stalls; `log1p` also maps
+\(0 \mapsto 0\), keeping the many zero-spenders well behaved.
+
+**5. Scaling.** I normalize the continuous columns to \([-1, 1]\) with
+`MinMaxScaler`, fit on the training set. I chose normalization over standardization
+because it directly matches the output range of `tanh`, so no input starts in the
+saturated region; together with the 0/1 one-hot columns, the whole matrix lives
+inside \([-1, 1]\). After scaling, the **training** matrix spans exactly
+\([-1.000, 1.000]\); the **test** matrix spans \([-1.000, 1.138]\) — slightly above
+1 because the scaler was fit on the training range and a test value exceeds it
+(the correct, leakage-free behavior; `tanh` still handles it gracefully).
 
 ### D — Verify and visualize
 
-_TODO_
+![Figure 6 — FoodCourt before and after preprocessing](figures/fig6_foodcourt.png)
+/// caption
+Figure 6 — `FoodCourt` before (raw, imputed: a spike at 0 with a long tail to
+~30 000) and after \(\log(1+x)\) + scaling to \([-1, 1]\) (zero-spenders at \(-1\),
+the rest spread across the range).
+///
+
+**Final checks.** No remaining `NaN` in either feature matrix; the final training
+feature matrix has shape **\((6954, 17)\)** (7 continuous + 10 one-hot columns); and
+the value range is `tanh`-compatible — train \([-1.000, 1.000]\), test
+\([-1.000, 1.138]\).
+
+**Which decision most affects training?** The \(\log(1+x)\) transform on the
+spending columns. Without it, those features carry raw values up to ~30 000; once
+scaled they would collapse almost every passenger onto a tiny cluster near \(-1\)
+while a few outliers pin the extreme, so `tanh` would saturate and the spending
+signal — which is highly predictive of `Transported` — would contribute almost no
+usable gradient. The log transform is what turns those columns into a well-spread,
+learnable input (visible in Figure 6).
+
+### Code
+
+The full, runnable code is the Jupyter notebook
+[`code/ex3_preprocessing.ipynb`](code/ex3_preprocessing.ipynb) (rendered as
+**Data — Ex. 3 (notebook)** in the navigation). It loads the data, produces the
+tables and Figure 6, and prints every reported number.
 
 ## Results summary
 
@@ -191,11 +384,11 @@ _TODO_
 | 3 | Mixing rate at \(s = 2.0\) | 0.2025 |
 | 4 | Mixing rate at \(s = 4.0\) | 0.4300 |
 | 5 | Smallest \(r_{ij}\) at \(s = 1.0\), and which pair | 1.326 — pair (0, 1) |
-| 6 | Distance between centers — Dataset I | |
-| 7 | Distance between centers — Dataset II | |
-| 8 | Explained variance PC1 + PC2 — Dataset I | |
-| 9 | Explained variance PC1 + PC2 — Dataset II | |
-| 10 | Share of the positive class in `Transported` | |
-| 11 | Mean and median of `FoodCourt` on the training set, before transforming | |
-| 12 | Final `shape` of the training feature matrix | |
-| 13 | Minimum and maximum of the training and test sets after scaling | |
+| 6 | Distance between centers — Dataset I | 3.264 |
+| 7 | Distance between centers — Dataset II | 0.266 |
+| 8 | Explained variance PC1 + PC2 — Dataset I | 0.670 |
+| 9 | Explained variance PC1 + PC2 — Dataset II | 0.429 |
+| 10 | Share of the positive class in `Transported` | 0.5036 |
+| 11 | Mean and median of `FoodCourt` on the training set, before transforming | mean 452.61, median 0.00 |
+| 12 | Final `shape` of the training feature matrix | (6954, 17) |
+| 13 | Minimum and maximum of the training and test sets after scaling | train [-1.000, 1.000], test [-1.000, 1.138] |

@@ -18,7 +18,7 @@ its report in `index.md`, the scripts under `code/`, and the plots under
 
 | Deliverable | Status |
 | --- | --- |
-| [Data](exercises/data/index.md) — preparation & analysis | In progress |
+| [Data](exercises/data/index.md) — preparation & analysis | Complete |
 | [Perceptron](exercises/perceptron/index.md) | Not started |
 | [MLP](exercises/mlp/index.md) | Not started |
 | [VAE](exercises/vae/index.md) | Not started |

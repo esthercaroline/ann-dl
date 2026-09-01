@@ -145,6 +145,8 @@ nav:
     - Data:
       - Report: ./exercises/data/index.md
       - "Data — Ex. 1 (notebook)": ./exercises/data/code/ex1_point_clouds.ipynb
+      - "Data — Ex. 2 (notebook)": ./exercises/data/code/ex2_nonlinearity.ipynb
+      - "Data — Ex. 3 (notebook)": ./exercises/data/code/ex3_preprocessing.ipynb
     - Perceptron: ./exercises/perceptron/index.md
     - MLP: ./exercises/mlp/index.md
     - VAE: ./exercises/vae/index.md
