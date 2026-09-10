@@ -1,12 +1,8 @@
 ---
 exercise: data
-ai_use: "Cursor (Claude) helped write the NumPy/Matplotlib data-generation and plotting code. The analysis, interpretation, and conclusions are my own."
 ---
 
 # Data — Preparation and Analysis for Neural Networks
-
-!!! info "Deliverable"
-    Individual · Deadline: 01 Sep 2026, 23:59 (commits).
 
 Technical rules used throughout this report: a single fixed random generator
 `rng = np.random.default_rng(42)`; every plot has a title, axis labels, and a
@@ -392,3 +388,6 @@ tables and Figure 6, and prints every reported number.
 | 11 | Mean and median of `FoodCourt` on the training set, before transforming | mean 452.61, median 0.00 |
 | 12 | Final `shape` of the training feature matrix | (6954, 17) |
 | 13 | Minimum and maximum of the training and test sets after scaling | train [-1.000, 1.000], test [-1.000, 1.138] |
+
+!!! info "AI-Use"
+    AI helped write the NumPy/Matplotlib data-generation and plotting code. The analysis, interpretation, and conclusions are my own."
