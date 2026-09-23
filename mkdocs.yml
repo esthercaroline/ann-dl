@@ -147,7 +147,10 @@ nav:
       - "Data — Ex. 1 (notebook)": ./exercises/data/code/ex1_point_clouds.ipynb
       - "Data — Ex. 2 (notebook)": ./exercises/data/code/ex2_nonlinearity.ipynb
       - "Data — Ex. 3 (notebook)": ./exercises/data/code/ex3_preprocessing.ipynb
-    - Perceptron: ./exercises/perceptron/index.md
+    - Perceptron:
+      - Report: ./exercises/perceptron/index.md
+      - "Perceptron — Ex. 1 (notebook)": ./exercises/perceptron/code/ex1_separable.ipynb
+      - "Perceptron — Ex. 2 (notebook)": ./exercises/perceptron/code/ex2_overlap.ipynb
     - MLP: ./exercises/mlp/index.md
     - VAE: ./exercises/vae/index.md
   - Projects: ./projects/index.md

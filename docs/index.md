@@ -19,7 +19,7 @@ its report in `index.md`, the scripts under `code/`, and the plots under
 | Deliverable | Status |
 | --- | --- |
 | [Data](exercises/data/index.md) — preparation & analysis | Complete |
-| [Perceptron](exercises/perceptron/index.md) | Not started |
+| [Perceptron](exercises/perceptron/index.md) — separability & the pocket algorithm | Complete |
 | [MLP](exercises/mlp/index.md) | Not started |
 | [VAE](exercises/vae/index.md) | Not started |
 | [Projects](projects/index.md) | Not started |
