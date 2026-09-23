@@ -23,9 +23,9 @@ is entirely my own code.
 
 ### A — Generate the data
 
-Two 2-D Gaussian clouds, 1000 points each: Class 0 \(\sim \mathcal{N}([1.5,1.5],
-0.5 I)\) and Class 1 \(\sim \mathcal{N}([5,5], 0.5 I)\). The centers are ~5 units
-apart while the per-axis standard deviation is only \(\sqrt{0.5}\approx 0.71\), so
+Two 2-D Gaussian clouds, 1000 points each: Class 0 \(\sim \mathcal{N}([1.5,1.5], 0.5 I)\)
+and Class 1 \(\sim \mathcal{N}([5,5], 0.5 I)\). The centers are ~5 units
+apart while the per-axis standard deviation is only \(\sqrt{0.5} \approx 0.71\), so
 the clouds are linearly separable.
 
 ![Figure 1 — separable data](figures/fig1_separable_data.png)
@@ -37,8 +37,8 @@ Figure 1 — 2000 points, one color per class. The two clouds are cleanly apart.
 
 The model is written from scratch and reused unchanged in Exercise 2:
 
-- **Prediction:** \(\hat{y} = \text{step}(\mathbf{w}\cdot\mathbf{x}+b)\), with
-  \(\text{step}(z)=1\) if \(z\ge 0\) else \(0\).
+- **Prediction:** \(\hat{y} = \mathrm{step}(\mathbf{w}\cdot\mathbf{x}+b)\), with
+  \(\mathrm{step}(z)=1\) if \(z\ge 0\) else \(0\).
 - **Update (matched to \(\{0,1\}\) labels):**
   \(\mathbf{w} \leftarrow \mathbf{w} + \eta\,(y-\hat{y})\,\mathbf{x}\),
   \(b \leftarrow b + \eta\,(y-\hat{y})\). The error \((y-\hat{y})\) is \(0\) on a
@@ -80,7 +80,7 @@ updates for separable data — here, 26 epochs.
 **2. Learning-rate comparison (\(\eta=0.01\) vs \(\eta=1.0\)).** Same data, same
 initialization, only \(\eta\) changed:
 
-| \(\eta\) | epochs | final acc | \(\mathbf{w}\) | \(b\) | \(\mathbf{w}/\lVert\mathbf{w}\rVert\) |
+| \(\eta\) | epochs | final acc | \(\mathbf{w}\) | \(b\) | \(\mathbf{w}/\Vert\mathbf{w}\Vert\) |
 | --- | --- | --- | --- | --- | --- |
 | 0.01 | 26 | 1.0000 | \([0.0505, 0.0289]\) | \(-0.25\) | \([0.8681, 0.4963]\) |
 | 1.0 | 37 | 1.0000 | \([5.871, 3.359]\) | \(-31.0\) | \([0.8679, 0.4967]\) |
@@ -89,14 +89,14 @@ Both reach 100%. The two weight **directions** are essentially identical (cosine
 similarity \(1.0000\), angle \(0.02^\circ\)), but the **magnitudes** differ by ~100×
 — exactly the ratio of the learning rates. This is the point of the hint: every
 update adds \(\eta\,\mathbf{x}\) to weights that started at magnitude ~0.01, so with
-\(\eta=1.0\) the accumulated updates (\(\approx \eta\lVert\mathbf{x}\rVert \approx
-5\) per step) instantly dwarf the tiny init and \(\lVert\mathbf{w}\rVert\) grows to
+\(\eta=1.0\) the accumulated updates (\(\approx \eta\Vert\mathbf{x}\Vert \approx 5\) per step)
+instantly dwarf the tiny init and \(\Vert\mathbf{w}\Vert\) grows to
 ~6.8, whereas with \(\eta=0.01\) it stays ~0.06. Because the boundary
 \(\mathbf{w}\cdot\mathbf{x}+b=0\) is invariant to the overall scale of
 \((\mathbf{w},b)\), the two lines share the same orientation; they differ only in
-their offset \(-b/\lVert\mathbf{w}\rVert\) (\(\approx 4.30\) vs \(4.58\)), i.e. they
+their offset \(-b/\Vert\mathbf{w}\Vert\) (\(\approx 4.30\) vs \(4.58\)), i.e. they
 sit at slightly different places *within the separating margin* — both valid. So
-**\(\eta\) controls the scale of the weights and where in the margin the boundary
+\(\eta\) **controls the scale of the weights and where in the margin the boundary
 lands (and the epoch count), not the final orientation** on cleanly separable data.
 
 **3. Why a zero start would make \(\eta\) irrelevant.** Start from
@@ -104,13 +104,11 @@ lands (and the epoch count), not the final orientation** on cleanly separable da
 every step \(t\), \(\mathbf{w}^{(\eta)}_t = \eta\,\mathbf{a}_t\) and
 \(b^{(\eta)}_t = \eta\,c_t\) for rate-independent \(\mathbf{a}_t, c_t\). By
 induction: it holds at \(t=0\) (both sides zero). The prediction is
-\(\hat{y}=\text{step}(\mathbf{w}_t\cdot\mathbf{x}+b_t)
-=\text{step}(\eta(\mathbf{a}_t\cdot\mathbf{x}+c_t))
-=\text{step}(\mathbf{a}_t\cdot\mathbf{x}+c_t)\) because \(\eta>0\) does not change a
-sign. So \(\hat{y}\) — and therefore the error \((y-\hat{y})\) — is **identical for
-every \(\eta\)**. The update then gives
-\(\mathbf{w}_{t+1}=\eta\,\mathbf{a}_t+\eta(y-\hat{y})\mathbf{x}
-=\eta\,\mathbf{a}_{t+1}\), closing the induction. Hence running with \(\eta_1\) and
+\(\hat{y} = \mathrm{step}(\mathbf{w}_t\cdot\mathbf{x}+b_t) = \mathrm{step}(\eta(\mathbf{a}_t\cdot\mathbf{x}+c_t)) = \mathrm{step}(\mathbf{a}_t\cdot\mathbf{x}+c_t)\)
+because \(\eta>0\) does not change a sign. So \(\hat{y}\) — and therefore the error
+\((y-\hat{y})\) — is **identical for every \(\eta\)**. The update then gives
+\(\mathbf{w}_{t+1} = \eta\,\mathbf{a}_t + \eta(y-\hat{y})\mathbf{x} = \eta\,\mathbf{a}_{t+1}\),
+closing the induction. Hence running with \(\eta_1\) and
 \(\eta_2\) yields weights that differ only by the constant factor
 \(\eta_2/\eta_1\); the decision boundary \(\{\mathbf{x}:\mathbf{a}\cdot\mathbf{x}+c=0\}\)
 and the entire update sequence (so the epoch count) are identical. From a zero
@@ -120,8 +118,8 @@ start \(\eta\) has **no effect at all** — which is why item B forbids it.
 
 ### A — Generate the data
 
-Two 2-D Gaussian clouds, 1000 points each: Class 0 \(\sim \mathcal{N}([3,3], 1.5
-I)\) and Class 1 \(\sim \mathcal{N}([4,4], 1.5 I)\). The centers are only ~1.4 units
+Two 2-D Gaussian clouds, 1000 points each: Class 0 \(\sim \mathcal{N}([3,3], 1.5 I)\)
+and Class 1 \(\sim \mathcal{N}([4,4], 1.5 I)\). The centers are only ~1.4 units
 apart while the standard deviation is ~1.22 (three times the spread of Exercise 1),
 so the clouds overlap heavily and **no straight line separates them**.
 
@@ -168,14 +166,14 @@ never settles; the best-so-far pocket accuracy (green) climbs and plateaus at
 **1. The gap between final (~50%) and pocket (~73%).** On non-separable data the
 loop never stops updating, so the **final** weights are simply wherever the last
 mistakes left them. Figure 5 shows the final boundary sitting *below* the cloud
-(centered near \((3.5,3.5)\)): the final \(\mathbf{w}\) is tiny
-(\(\lVert\mathbf{w}\rVert\approx 0.06\)) and \(b\approx -0.04\), so the line passes
+(centered near \((3.5, 3.5)\)): the final \(\mathbf{w}\) is tiny
+(\(\Vert\mathbf{w}\Vert \approx 0.06\)) and \(b \approx -0.04\), so the line passes
 far from the data centroid and nearly every point lands on one side — with balanced
 classes that gives ~50%. The loop leaves it there because of the imbalance the hint
 points to: each mistake moves \(b\) by only \(\eta = 0.01\), but moves
-\(\mathbf{w}\) by \(\eta\lVert\mathbf{x}\rVert \approx 0.01\times 5 = 0.05\). The
+\(\mathbf{w}\) by \(\eta\Vert\mathbf{x}\Vert \approx 0.01 \times 5 = 0.05\). The
 orientation of \(\mathbf{w}\) therefore swings ~5× faster than the offset \(b\) can
-travel, so \(b\) can never climb to the value (\(\approx -\mathbf{w}\cdot(3.5,3.5)\))
+travel, so \(b\) can never climb to the value \(\approx -\mathbf{w}\cdot(3.5, 3.5)\)
 needed to place the line *through* the cloud — the final line keeps getting knocked
 to the margin. The **pocket** sidesteps this entirely by remembering the
 best-scoring weights ever visited (73%, ≈ the best possible straight line).
@@ -223,4 +221,4 @@ The from-scratch model is
 (notebook)**). They generate the data, train the model, and produce Figures 1–6.
 
 !!! info "AI-Use"
-    AI helped write the NumPy/Matplotlib data-generation and plotting code. The analysis, interpretation, and conclusions are my own."
+    AI helped write the NumPy/Matplotlib data-generation and plotting code. The analysis, interpretation, and conclusions are my own.

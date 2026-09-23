@@ -57,9 +57,9 @@ plane.
 
 Using \(\bar{\sigma}_k = (\sigma_{k,x} + \sigma_{k,y})/2\) — so
 \(\bar{\sigma} = [1.65, 1.55, 0.90, 1.25]\) — the six pairwise ratios
-\(r_{ij} = \lVert \mu_i - \mu_j \rVert / (\bar{\sigma}_i + \bar{\sigma}_j)\) are:
+\(r_{ij} = \Vert \mu_i - \mu_j \Vert / (\bar{\sigma}_i + \bar{\sigma}_j)\) are:
 
-| Pair \((i, j)\) | \(\lVert \mu_i - \mu_j \rVert\) | \(r_{ij}\) |
+| Pair \((i, j)\) | \(\Vert \mu_i - \mu_j \Vert\) | \(r_{ij}\) |
 | --- | --- | --- |
 | (0, 1) | 4.243 | **1.326** |
 | (1, 2) | 5.831 | 2.380 |
@@ -106,7 +106,7 @@ clouds overlap by construction.
 
 **1. Overlap at \(s = 1\), and linear separability.** In the original dataset the
 four clouds are mostly distinct, but Classes 0 and 1 overlap along the
-\(x_1 \approx 3\text{–}6\) band (their \(r_{01} = 1.326\) is the smallest ratio),
+\(x_1 \approx 3\)–\(6\) band (their \(r_{01} = 1.326\) is the smallest ratio),
 and Class 1 brushes Class 2 near the bottom. Class 3 sits far to the right,
 cleanly apart. A **single** linear boundary cannot separate all four classes: one
 hyperplane only cuts the plane into two half-planes, and we have four regions.
@@ -163,7 +163,7 @@ between the first two features, whereas Class A's is positive. This yields a
 ### B — Dataset II: concentric shells
 
 I drew directions uniformly on the unit sphere of \(\mathbb{R}^5\)
-(\(v \sim \mathcal{N}(0, I_5)\), then \(u = v/\lVert v \rVert\)) and scaled each by
+(\(v \sim \mathcal{N}(0, I_5)\), then \(u = v/\Vert v \Vert\)) and scaled each by
 a random radius: Class C (core) with \(\rho \sim \mathcal{N}(2.0, 0.4)\) and
 Class D (shell) with \(\rho \sim \mathcal{N}(5.0, 0.4)\), so \(x = \rho \, u\). I
 read the second parameter as a **standard deviation** of \(0.4\). This also yields
@@ -194,14 +194,14 @@ radial, which no linear axis captures, so the classes stay superimposed.
 
 **Distance between class centers (in 5D)** and the radius histograms:
 
-| Dataset | \(\lVert \mu_1 - \mu_2 \rVert\) |
+| Dataset | \(\Vert \mu_1 - \mu_2 \Vert\) |
 | --- | --- |
 | I — shifted Gaussians | **3.264** |
 | II — concentric shells | **0.266** |
 
 ![Figure 5 — radius histograms, both classes overlaid, per dataset](figures/fig5_radius.png)
 /// caption
-Figure 5 — Radius \(\lVert x \rVert\) per class. Dataset I overlaps; Dataset II is
+Figure 5 — Radius \(\Vert x \Vert\) per class. Dataset I overlaps; Dataset II is
 perfectly separated in radius (\(\approx 2\) vs. \(\approx 5\)) despite its class
 centers nearly coinciding.
 ///
@@ -231,7 +231,7 @@ transformation, so a projection in which the classes look mixed (Figure 4, right
 only \(0.429\) variance retained) proves only that **no linear view** separates
 them — not that no function does. My own results confirm this: the same Dataset II
 is separated **perfectly** by a single quadratic feature,
-\(f(x) = \lVert x \rVert^2 = \sum_i x_i^2\). Thresholding at radius \(3.5\)
+\(f(x) = \Vert x \Vert^2 = \sum_i x_i^2\). Thresholding at radius \(3.5\)
 (i.e. \(f(x) = 12.25\)) — "predict shell when \(\sum_i x_i^2 > 12.25\)" — gives
 **accuracy \(1.0000\)** on the 1000 points.
 
@@ -390,4 +390,4 @@ tables and Figure 6, and prints every reported number.
 | 13 | Minimum and maximum of the training and test sets after scaling | train [-1.000, 1.000], test [-1.000, 1.138] |
 
 !!! info "AI-Use"
-    AI helped write the NumPy/Matplotlib data-generation and plotting code. The analysis, interpretation, and conclusions are my own."
+    AI helped write the NumPy/Matplotlib data-generation and plotting code. The analysis, interpretation, and conclusions are my own.
