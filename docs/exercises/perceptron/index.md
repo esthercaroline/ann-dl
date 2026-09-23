@@ -1,12 +1,9 @@
 ---
 exercise: perceptron
-ai_use: "AI helped write the NumPy/Matplotlib data-generation and plotting code. The analysis, interpretation, and conclusions are my own."
 ---
 
 # Perceptron — Understanding Perceptrons and Their Limitations
 
-!!! info "Deliverable"
-    Individual · Deadline: 22 Sep 2026, 23:59 (commits).
 
 **Approach.** I wrote a single-layer perceptron from scratch in `perceptron.py`
 (NumPy only — no `scikit-learn` model) as one reusable class: the step activation,
@@ -226,4 +223,4 @@ The from-scratch model is
 (notebook)**). They generate the data, train the model, and produce Figures 1–6.
 
 !!! info "AI-Use"
-    AI helped write the NumPy/Matplotlib data-generation and plotting code. The analysis, interpretation, and conclusions are my own.
+    AI helped write the NumPy/Matplotlib data-generation and plotting code. The analysis, interpretation, and conclusions are my own."
