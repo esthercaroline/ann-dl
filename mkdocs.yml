@@ -151,7 +151,12 @@ nav:
       - Report: ./exercises/perceptron/index.md
       - "Perceptron — Ex. 1 (notebook)": ./exercises/perceptron/code/ex1_separable.ipynb
       - "Perceptron — Ex. 2 (notebook)": ./exercises/perceptron/code/ex2_overlap.ipynb
-    - MLP: ./exercises/mlp/index.md
+      - MLP:
+        - Report: ./exercises/mlp/index.md
+        - "MLP — Ex. 1 (notebook)": ./exercises/mlp/code/ex1_backprop.ipynb
+        - "MLP — Ex. 2 (notebook)": ./exercises/mlp/code/ex2_binary.ipynb
+        - "MLP — Ex. 3 (notebook)": ./exercises/mlp/code/ex3_multiclass.ipynb
+        - "MLP — Ex. 4 (notebook)": ./exercises/mlp/code/ex4_depth.ipynb
     - VAE: ./exercises/vae/index.md
   - Projects: ./projects/index.md
   - About this site: ./thisdocumentation/index.md
