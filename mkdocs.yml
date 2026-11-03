@@ -157,6 +157,9 @@ nav:
       - "MLP — Ex. 2 (notebook)": ./exercises/mlp/code/ex2_binary.ipynb
       - "MLP — Ex. 3 (notebook)": ./exercises/mlp/code/ex3_multiclass.ipynb
       - "MLP — Ex. 4 (notebook)": ./exercises/mlp/code/ex4_depth.ipynb
-    - VAE: ./exercises/vae/index.md
+    - VAE:
+      - Report: ./exercises/vae/index.md
+      - "VAE — Ex. 1 (notebook)": ./exercises/vae/code/ex1_vae_mnist.ipynb
+      - "VAE — Ex. 2 (notebook)": ./exercises/vae/code/ex2_latent_2d.ipynb
   - Projects: ./projects/index.md
   - About this site: ./thisdocumentation/index.md

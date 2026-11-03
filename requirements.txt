@@ -15,6 +15,9 @@ matplotlib
 numpy
 pandas
 scikit-learn
+scipy
 seaborn
+torch
+torchvision
 yfinance
 

@@ -5,3 +5,6 @@ env/
 .cache/
 .vscode/
 target/__pycache__/
+**/__pycache__/
+docs/exercises/vae/code/data/
+*.pt
