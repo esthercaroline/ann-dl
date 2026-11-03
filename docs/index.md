@@ -21,8 +21,8 @@ its report in `index.md`, the scripts under `code/`, and the plots under
 | [Data](exercises/data/index.md) — preparation & analysis | Complete |
 | [Perceptron](exercises/perceptron/index.md) — separability & the pocket algorithm | Complete |
 | [MLP](exercises/mlp/index.md) | Complete |
-| [VAE](exercises/vae/index.md) | Not started |
-| [Projects](projects/index.md) | Not started |
+| [VAE](exercises/vae/index.md) — reconstructions, samples & 2-D latent space | Complete |
+| [Projects](projects/index.md) — EDA (classification & regression) | EDA complete; models not started |
 
 ## Reproducing the work
 
